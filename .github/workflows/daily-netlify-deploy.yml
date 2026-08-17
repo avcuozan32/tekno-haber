@@ -1,0 +1,19 @@
+name: Gunluk Haber Guncelleme
+
+on:
+  schedule:
+    # Her gün Türkiye saatiyle yaklaşık 08:00
+    # GitHub saatleri UTC kullanır. 05:00 UTC = Türkiye'de 08:00
+    - cron: "0 5 * * *"
+
+  # GitHub panelinden elle çalıştırabilmek için
+  workflow_dispatch:
+
+jobs:
+  trigger-netlify-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Netlify yeniden yayinlama tetikle
+        run: |
+          curl -X POST -d '{}' "${{ secrets.NETLIFY_BUILD_HOOK }}"
