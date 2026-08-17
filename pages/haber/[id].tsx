@@ -1,102 +1,89 @@
-﻿import { GetStaticPaths, GetStaticProps } from 'next';
-import { useEffect, useState } from 'react';
+﻿import type { GetStaticPaths, GetStaticProps } from 'next';
 import Layout from '../../components/Layout';
 import AdSlot from '../../components/AdSlot';
 import { getNews, NewsItem } from '../../lib/getNews';
 import { CATEGORIES } from '../../lib/categories';
-import { translations, detectUserLanguage, Lang } from '../../lib/translations';
 
-interface NewsDetailProps {
+type Props = {
   item: NewsItem;
-}
+};
 
-export default function NewsDetail({ item }: NewsDetailProps) {
-  const [lang, setLang] = useState<Lang>('tr');
-  useEffect(() => { setLang(detectUserLanguage()); }, []);
-  
-  const t = translations[lang];
-  const categoryName = CATEGORIES.find(c => c.slug === item.category)?.name || 'Genel';
+export default function NewsDetail({ item }: Props) {
+  const categoryName =
+    CATEGORIES.find((category) => category.slug === item.category)?.name ||
+    'Genel Teknoloji';
 
   return (
-    <Layout title={`${item.title}`}>
-           {/* GOOGLE SCHMEA MARKUP (SEO İÇİN ÇOK ÖNEMLİ) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'NewsArticle',
-            headline: item.title,
-            image: item.image ? [item.image] : [],
-            datePublished: item.pubDate,
-            dateModified: item.pubDate,
-            author: {
-              '@type': 'Organization',
-              name: item.source,
-            },
-            publisher: {
-              '@type': 'Organization',
-              name: 'TeknoHaber',
-              logo: {
-                '@type': 'ImageObject',
-                url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/logo.png`,
-              },
-            },
-            description: item.contentSnippet,
-            mainEntityOfPage: {
-              '@type': 'WebPage',
-              '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/haber/${item.id}`,
-            },
-          }),
-        }}
-      />
+    <Layout
+      title={`${item.title} | TeknoHaber`}
+      description={item.contentSnippet || item.title}
+    >
       <article className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <span className="text-sm font-medium text-blue-600">{categoryName}</span>
+          <span className="text-sm font-medium text-blue-600">
+            {categoryName}
+          </span>
+
           <h1 className="text-3xl md:text-4xl font-bold mt-2 mb-4 text-gray-900 dark:text-white">
             {item.title}
           </h1>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span>{t.newsFrom} {item.source}</span>
+
+          <div className="flex items-center gap-3 text-sm text-gray-500">
+            <span>{item.source}</span>
             <span>•</span>
-            <span>{new Date(item.pubDate).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US')}</span>
+            <span>
+              {new Date(item.pubDate).toLocaleDateString('tr-TR')}
+            </span>
           </div>
         </div>
 
-        {item.image && (
-  <div className="rounded-lg overflow-hidden mb-6">
-    <img 
-      src={item.image.startsWith('http') ? `/api/image-proxy?url=${encodeURIComponent(item.image)}` : item.image}
-      alt={item.title} 
-      className="w-full h-auto"
-      onError={(e) => { 
-        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxZjI5MzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOWNhM2FmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+R8O2cnNlbCBCdWx1bmFtYWRhxL8vdGV4dD48L3N2Zz4=';
-      }}
-    />
-  </div>
-)}
+        {item.image ? (
+          <div className="w-full aspect-video overflow-hidden rounded-lg bg-gradient-to-br from-blue-600 to-indigo-800 mb-6">
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full h-full object-cover"
+              onError={(event) => {
+                event.currentTarget.style.display = 'none';
+              }}
+            />
+          </div>
+        ) : (
+          <div className="w-full aspect-video rounded-lg bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center mb-6">
+            <span className="text-6xl">📰</span>
+          </div>
+        )}
 
-        <AdSlot slot="1234567890" format="horizontal" className="mb-6" />
+        <AdSlot
+          slot="1234567890"
+          format="horizontal"
+          className="mb-6"
+        />
 
-        <div className="prose dark:prose-invert max-w-none mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
           <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-            {item.contentSnippet}
+            {item.contentSnippet || 'Bu haber için kısa özet bulunamadı.'}
           </p>
-          <p className="text-sm text-gray-500 mt-4 italic">
-            {t.sourceNote}
+
+          <p className="text-sm text-gray-500 mt-5">
+            Haberin tamamını okumak için kaynak siteyi ziyaret edebilirsiniz.
           </p>
+
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="inline-block mt-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+          >
+            Kaynağa Git: {item.source} →
+          </a>
         </div>
 
-        <a
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors"
-        >
-          {t.goToSource}: {item.source} →
-        </a>
-
-        <AdSlot slot="0987654321" format="rectangle" className="mt-10" />
+        <AdSlot
+          slot="0987654321"
+          format="rectangle"
+          className="mt-10"
+        />
       </article>
     </Layout>
   );
@@ -107,7 +94,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: news.map((item) => ({
-      params: { id: item.id },
+      params: {
+        id: item.id,
+      },
     })),
     fallback: false,
   };
@@ -116,6 +105,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const id = params?.id as string;
   const news = await getNews();
+
   const item = news.find((newsItem) => newsItem.id === id);
 
   if (!item) {
