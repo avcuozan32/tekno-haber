@@ -62,7 +62,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = CATEGORIES.filter(c => c.slug !== 'genel').map((cat) => ({
     params: { slug: cat.slug },
   }));
-  return { paths, fallback: 'blocking' };
+  return { paths, fallback: false };
 };
 
 export const getStaticProps: GetStaticProps<CategoryPageProps> = async ({ params }) => {
@@ -74,11 +74,9 @@ export const getStaticProps: GetStaticProps<CategoryPageProps> = async ({ params
   const news = allNews.filter((item) => item.category === slug);
 
   return {
-    props: {
-      categoryName: category.name,
-      categorySlug: slug,
-      news,
-    },
-    revalidate: 3600,
-  };
+  props: {
+    categoryName: category.name,
+    news,
+  },
+};
 };

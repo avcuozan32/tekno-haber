@@ -56,7 +56,7 @@ function extractImageFromRSS(item: any): string | null {
   const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
   if (imgMatch?.[1]) return imgMatch[1];
   
-  const desc = item.description || '';
+  const desc = (item as any).description || '';
   const descDataSrc = desc.match(/<img[^>]+data-src=["']([^"']+)["']/i);
   if (descDataSrc?.[1]) return descDataSrc[1];
   const descMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -112,7 +112,7 @@ export async function getNews(): Promise<NewsItem[]> {
           const title = item.title?.trim() || '';
           if (!title || !item.link) continue;
 
-          const snippet = (item.contentSnippet || item.summary || item.description || '')
+          const snippet = ((item as any).contentSnippet || (item as any).summary || (item as any).description || '')
             .replace(/<[^>]*>/g, '').trim().slice(0, 200);
 
           let imageUrl = extractImageFromRSS(item);

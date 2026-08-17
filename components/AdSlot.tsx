@@ -25,7 +25,7 @@ export default function AdSlot({ slot, format = 'auto', className = '', style }:
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"  // Kullanıcı kendi ID'sini girmeli
+        data-ad-client="ca-pub-6220773194970527"  // Kullanıcı kendi ID'sini girmeli
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"

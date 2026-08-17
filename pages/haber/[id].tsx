@@ -104,14 +104,29 @@ export default function NewsDetail({ item }: NewsDetailProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const news = await getNews();
-  const paths = news.slice(0, 50).map((item) => ({ params: { id: item.id } }));
-  return { paths, fallback: 'blocking' };
+
+  return {
+    paths: news.map((item) => ({
+      params: { id: item.id },
+    })),
+    fallback: false,
+  };
 };
 
-export const getStaticProps: GetStaticProps<NewsDetailProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const id = params?.id as string;
   const news = await getNews();
-  const item = news.find((n) => n.id === id);
-  if (!item) return { notFound: true };
-  return { props: { item }, revalidate: 3600 };
+  const item = news.find((newsItem) => newsItem.id === id);
+
+  if (!item) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      item,
+    },
+  };
 };

@@ -59,5 +59,11 @@ export default function Home({ news }: HomeProps) {
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const news = await getNews();
-  return { props: { news }, revalidate: 3600 };
+
+  return {
+    props: {
+      news,
+      totalCount: news.length,
+    },
+  };
 };
