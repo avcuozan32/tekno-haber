@@ -17,7 +17,7 @@ export default function Layout({
   return (
     <>
       <Head>
-	<meta name="google-site-verification" content="ELayId19pP48Eff8xf23sOiBIravgIxCx5AmajY6A9A" >
+	<meta name="google-site-verification" content="ELayId19pP48Eff8xf23sOiBIravgIxCx5AmajY6A9A" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
