@@ -4,7 +4,7 @@ on:
   schedule:
     # Her gün Türkiye saatiyle yaklaşık 08:00
     # GitHub saatleri UTC kullanır. 05:00 UTC = Türkiye'de 08:00
-    - cron: "0 5 * * *"
+    - cron: "0 */6 * * *"
 
   # GitHub panelinden elle çalıştırabilmek için
   workflow_dispatch:
