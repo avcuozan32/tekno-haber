@@ -98,7 +98,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         id: item.id,
       },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };
 
@@ -118,5 +118,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     props: {
       item,
     },
+    revalidate: 3600,
   };
+};
 };

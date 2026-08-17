@@ -1,4 +1,4 @@
-﻿import { GetStaticPaths, GetStaticProps } from 'next';
+﻿import type { GetStaticPaths, GetStaticProps } from 'next';
 import Layout from '../../components/Layout';
 import NewsCard from '../../components/NewsCard';
 import AdSlot from '../../components/AdSlot';
@@ -6,11 +6,11 @@ import CategoryFilter from '../../components/CategoryFilter';
 import { getNews, NewsItem } from '../../lib/getNews';
 import { CATEGORIES } from '../../lib/categories';
 
-interface CategoryPageProps {
+type CategoryPageProps = {
   categoryName: string;
   categorySlug: string;
   news: NewsItem[];
-}
+};
 
 export default function CategoryPage({
   categoryName,
@@ -20,7 +20,7 @@ export default function CategoryPage({
   return (
     <Layout
       title={`${categoryName} Haberleri | TeknoHaber`}
-      description={`${categoryName} kategorisindeki en güncel teknoloji haberleri.`}
+      description={`${categoryName} kategorisindeki güncel teknoloji haberleri.`}
     >
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
@@ -62,7 +62,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking',
   };
 };
 
@@ -83,9 +83,7 @@ export const getStaticProps: GetStaticProps<CategoryPageProps> = async ({
 
   const allNews = await getNews();
 
-  const news = allNews.filter(
-    (item) => item.category === slug
-  );
+  const news = allNews.filter((item) => item.category === slug);
 
   return {
     props: {
