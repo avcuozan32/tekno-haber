@@ -1,4 +1,5 @@
 ﻿import { useEffect } from 'react';
+import Script from 'next/script';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 
@@ -43,5 +44,25 @@ export default function App({ Component, pageProps }: AppProps) {
       .catch(() => {});
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+  <>
+    <Script
+      src="https://www.googletagmanager.com/gtag/js?id=G-1DBTHVLEXC"
+      strategy="afterInteractive"
+    />
+
+    <Script id="google-analytics" strategy="afterInteractive">
+      {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-1DBTHVLEXC', {
+          page_path: window.location.pathname
+        });
+      `}
+    </Script>
+
+    <Component {...pageProps} />
+  </>
+);
 }
